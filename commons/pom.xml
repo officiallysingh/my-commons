@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.clearcaptions</groupId>
+		<artifactId>ccwsv3</artifactId>
+		<version>1.0.2-SNAPSHOT</version>
+	</parent>
+	<groupId>com.clearcaptions.ccwsv3</groupId>
+	<artifactId>commons</artifactId>
+	<!-- <version>${project.version}</version> -->
+	<packaging>pom</packaging>
+	<name>commons</name>
+	<description>Commons parent project</description>
+
+
+	<properties>
+		<!-- <scm_user>${username}</scm_user> -->
+		<!-- <scm_passwd>${password}</scm_passwd> -->
+	</properties>
+
+	<modules>
+		<module>ccwsv3-commons</module>
+		<module>boot-commons</module>
+	</modules>
+
+	<dependencies>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-deploy</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>deploy</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<release>${java.version}</release>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>nexus.dev.clearcaptions.com-snapshot</id>
+			<url>https://nexus.dev.clearcaptions.com/repository/clearcaptions-snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>nexus.dev.clearcaptions.com-release</id>
+			<url>https://nexus.dev.clearcaptions.com/repository/clearcaptions-releases/</url>
+		</repository>
+	</distributionManagement>
+
+</project>

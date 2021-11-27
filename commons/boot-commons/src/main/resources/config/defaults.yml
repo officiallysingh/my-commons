@@ -1,0 +1,241 @@
+
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+#
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+# set -Dspring.profiles.active=<dev|sit|int> as JVM argument to run in desired profile
+# If no profile is specified explicitly, application will fall back to default profile, which is "local"
+
+logging:
+    #file:
+        #path: logs
+        #name: ${logging.file.path}/application.log
+        #clean-history-on-start: true
+    level:
+        ROOT: info
+debug: false
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: "*"
+    info:
+        git:
+            mode: full
+
+spring:
+    #profiles:
+        #active: local
+        #include:
+            #- feature-1
+    #application:
+        #name: application-name  
+    devtools: 
+        add-properties: false
+        restart: 
+            enabled: false
+            exclude: logs/*,application.log,*.log,*.log.*
+    jmx:
+        enabled: false  
+    # You might wanna enable Keycloak security, cache and Cloud Config later on
+    cache:
+        type: NONE
+    autoconfigure:
+        exclude: 
+            #- org.keycloak.adapters.springboot.KeycloakAutoConfiguration  
+            - org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
+            - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+            - org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration
+            - org.springframework.boot.autoconfigure.admin.SpringApplicationAdminJmxAutoConfiguration
+            - org.springframework.cloud.openfeign.hateoas.FeignHalAutoConfiguration
+            - org.springframework.cloud.configuration.CompatibilityVerifierAutoConfiguration
+    messages:
+        basename: i18n/messages,i18n/errors
+        cache-duration: PT10S # 10 second, see the ISO 8601 standard
+        fallback-to-system-locale: true
+        always-use-message-format: false
+        use-code-as-default-message: false      
+    main:
+        log-startup-info: true
+    # Highest priority (only lower that VM args), override from application.yml 
+    config:
+        import: 
+            #- classpath:/config/default.properties
+            #- classpath:/config/override.properties
+    task:
+        execution:
+            thread-name-prefix: app-task-executor-
+            pool:
+                core-size: 4
+                max-size: 16
+                queue-capacity: 1000
+                keep-alive: "10s"    
+    jackson:
+        date-format: yyyy-MM-dd HH:mm:ss
+        #time-zone:
+        #locale: 
+        #property-naming-strategy: 
+        serialization:
+            write-dates-with-zone-id: true
+            write-dates-as-timestamps: false
+            
+    ###### Couchbase configurations ######
+    #couchbase:
+        #connection-string: ${COUCHBASE_HOST}
+        #username: ${COUCHBASE_USERNAME}
+        #password: ${COUCHBASE_PASSWORD}
+    #data:
+        #couchbase:
+            #auto-index: true
+            #bucket-name: ${COUCHBASE_BUCKET_NAME}
+            
+    #hateoas:
+        #use-hal-as-default-json-media-type: false
+    #webflux:
+        #base-path: hammer
+
+    mvc:
+        throw-exception-if-no-handler-found: true    
+        servlet:
+            load-on-startup: 1
+    web:
+        resources:
+            add-mappings: false
+server:
+    forward-headers-strategy: framework
+    port: 8080
+    servlet:
+        #context-path: app        
+        session:
+            cookie:
+                secure: true
+                
+    # Configure following to enable email sending
+    #mail:
+        #host: smtp.gmail.com
+        #port: 587
+        #username: user1
+        #password: "]3QJ>]7-.pnb!):Z"
+        #protocol: smtp
+        #properties:  
+            #'mail.smtp.auth': true
+            #'mail.smtp.starttls.enable': true
+            #'mail.smtp.connectiontimeout': 5000
+            #'mail.smtp.timeout': 5000
+            #'mail.smtp.writetimeout': 5000
+#cloud:
+    #aws:
+        #credentials:
+            #access-key: ${AWS_ACCESS_KEY_ID}
+            #secret-key: ${AWS_SECRET_ACCESS_KEY}
+        #region:
+            #static: ${AWS_REGION}
+        #sqs:
+            #enabled: true
+            #endpoint: ${AWS_SQS_ENDPOINT}
+            #region: ${SQS_REGION:${cloud.aws.region.static}}
+        #sns: 
+            #enabled: true   
+            #endpoint: ${AWS_SNS_ENDPOINT}
+            #region: ${SNS_REGION:${cloud.aws.region.static}}
+        #dynamodb:
+            #endpoint: ${AWS_DYNAMODB_ENDPOINT}
+            #region: ${DYNAMODB_REGION:${cloud.aws.region.static}}
+            #repository-package : com.clearcaptions.ccwsv3.e911.adapter.persistence
+            
+# ===================================================================
+# Application specific properties
+# Add your own application properties here
+# ===================================================================
+
+application:
+    feign-client: 
+        logging-level: NONE
+        intercept: true
+    pagination:
+        enabled: false
+        first-and-last-rels: true
+        default-page-size: 16
+        max-page-size: 1500
+        #page-param-name: page
+        #page-param-description: Requested Page number. zero-based page index, must not be negative
+        #size-param-name: size
+        #size-param-description: Size of a page. Allowed between 1 and %d, must not be negative
+        #sort-param-name: sort
+        #sort-param-description: 'Sorting criteria in the format: property(,asc|desc).'
+    cors:
+        allowed-origin-patterns: "*"
+        allowed-origins: "*"
+        allowed-methods: "*"
+        allowed-headers: "*"
+        exposed-headers: "Authorization,Link,X-Total-Count,X-CCWS-Success,X-CCWS-Warning,X-CCWS-Error,X-CCWS-Info,X-CCWS-Alert"
+        #exposed-headers: "Cache-Control,Content-Type,X-Frame-Options,X-XSS-Protection,strict-transport-security,x-content-security-policy,x-content-type-options,Authorization,Link,X-Total-Count,X-CCWS-Success,X-CCWS-Warning,X-CCWS-Error,X-CCWS-Info,X-CCWS-Alert"
+        allow-credentials: false
+        max-age: 1800
+    swagger:
+        enabled: false
+        title: ${spring.application.name} API
+        description: ${spring.application.name} API documentation
+        version: 0.0.1
+        terms-of-service-url: https://clearcaptions.com/
+        contact-name:
+        contact-url:
+        contact-email:
+        license:
+        license-url: https://clearcaptions.com/license.txt
+        use-default-response-messages: false
+        #host: 
+        #protocols:
+            #- http
+            #- https
+        default-group:
+            enabled: false
+            #name: app
+            #inclusion-pattern: 
+                #- /**
+            #exclusion-pattern:
+                #- /actuator/**
+    problem:
+        enabled: false
+        debug-info: false
+    security:
+        enabled: false
+        #unsecured-uris:
+            #- /actuator/**
+            #- /external/**
+        #scope-prefix: clearcaptions/
+        #secured-uris:
+            #-
+              #ant-patterns: 
+                  #- /**/provisioning/**
+              #method: POST
+              #scopes:
+                  #- voicemail_rw
+                  #- voicemail_ro
+    email:
+        enabled: false
+        templates-location: templates/
+        reply-to: 
+        validate-addresses: false
+    #provisioning:
+        #bandwidth:
+            #base-url: ${BANDWIDTH_BASE_URL}
+            #account-id: ${BANDWIDTH_ACCOUNT_ID:""}
+            #username: ${BANDWIDTH_USERNAME}
+            #password: ${BANDWIDTH_PASSWORD}
+    retry:
+        maxAttempts: 3
+        backoff:
+            delay: 1000
+            multiplier: 1.5
+         
